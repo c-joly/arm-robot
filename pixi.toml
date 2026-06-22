@@ -1,0 +1,17 @@
+[workspace]
+authors = ["Cyril JOLY <cyril.joly@mines-paristech.fr>"]
+channels = ["conda-forge"]
+name = "arm-2026"
+platforms = ["osx-arm64"]
+version = "0.1.0"
+
+[tasks]
+
+[dependencies]
+numpy = ">=2.4.6,<3"
+scipy = ">=1.17.1,<2"
+pygfx = ">=0.16.0,<0.17"
+glfw = ">=3.4,<4"
+pyside6 = ">=6.11.1,<7"
+trimesh = ">=4.12.2,<5"
+marimo = ">=0.23.9,<0.24"
