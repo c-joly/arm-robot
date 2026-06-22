@@ -242,20 +242,10 @@ def _():
     l0 = 2
     l1 = 1
     def direct_model_RR(theta0,theta1):
-        def Ti(theta,l):
-            c , s = cos(theta),sin(theta)
-            return np.array([[c,-s,l*c],[s,c,l*s],[0,0,1]])
-        T = Ti(theta0,l0)@Ti(theta1,l1)
-
-        # Solution alternative
-        x = l0*cos(theta0) + l1*cos(theta0+theta1)
-        y = l0*sin(theta0) + l1*sin(theta0+theta1)
-        #print(np.array([x,y]))
-        #return T[0:2,2]
-        return (x,y)
+        return (0,0)
 
 
-    return cos, direct_model_RR, l0, l1, np, pi, sin
+    return direct_model_RR, l0, l1, np, pi
 
 
 @app.cell
@@ -297,38 +287,18 @@ def _(mo):
 
 
 @app.cell
-def _(cos, l0, l1, sin):
+def _():
     from numpy import acos,atan2
 
     def inverse_model_RR(x,y):
-        if (x*x + y*y > (l0+l1)**2 or x*x + y*y < (l0-l1)**2):
-            print("Out of accessible space")
-            return None
+        return [(0,0)]
 
-        c1 = (x**2+y**2-l0**2-l1**2)/2/l0/l1
-        if acos(c1)==0:
-            Theta1 = [acos(c1)]
-        else:
-            Theta1 = [acos(c1),-acos(c1)]
-        Theta0=[]
-        for theta1 in Theta1:
-            c0 = (l0+l1*cos(theta1))*x + l1*sin(theta1)*y
-            s0 =-l1*sin(theta1)*x + (l0+l1*cos(theta1))*y
-            Theta0.append(atan2(s0,c0)) # by convention: atan2(0,0)=0 --> fine for the (0,0) case
-
-        sol = []
-        # Recompile solution
-        for i in range(len(Theta0)):
-            sol.append((float(Theta0[i]),float(Theta1[i])))
-
-        return sol
-
-    return (inverse_model_RR,)
+    return
 
 
-@app.cell
-def _(direct_model_RR, inverse_model_RR, np, pi):
-    def check_inverse(tol=1e-10):
+app._unparsable_cell(
+    r"""
+        def check_inverse(tol=1e-10):
         Q0 = np.linspace(-pi,pi,100)
         Q1 = np.linspace(-pi+1e-6,pi-1e-6,100) # For theta1=pi, the x,y returned is slightly outside the domain because of approx errors
         for q0 in Q0:
@@ -349,8 +319,9 @@ def _(direct_model_RR, inverse_model_RR, np, pi):
 
 
 
-
-    return (check_inverse,)
+    """,
+    name="_"
+)
 
 
 @app.cell(hide_code=True)
